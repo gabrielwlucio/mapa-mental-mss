@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Mental: Medicina, Saúde e Sociedade I</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f4f8; /* Light grayish-blue background */
+            color: #333;
+        }
+
+        .mindmap-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .mindmap-header {
+            text-align: center;
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 3px solid #00796b; /* Dark teal for border */
+        }
+
+        .mindmap-header h1 {
+            color: #004d40; /* Very dark green for title */
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .mindmap-header p.subtitle { /* Added class for subtitle for specific styling */
+            font-style: italic;
+            color: #555;
+            font-size: 1.1em;
+            margin-bottom: 20px; /* Added margin for spacing */
+        }
+         .mindmap-header .student-info { /* Changed class name for clarity */
+            font-size: 1.1em; /* Increased font size */
+            color: #004d40; /* Dark green for emphasis */
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e0f2f1; /* Very light teal */
+            border-left: 5px solid #00796b; /* Dark teal accent */
+            border-radius: 6px;
+            text-align: left; /* Align text to the left for better readability */
+            line-height: 1.8; /* Increased line height */
+        }
+        .mindmap-header .student-info strong {
+            font-weight: 700; /* Bolder student names */
+            display: block; /* Make names appear on new lines if needed or for emphasis */
+            margin-bottom: 5px;
+        }
+         .mindmap-header .student-info .class-details {
+            font-style: normal;
+            font-weight: 500;
+            color: #00695c; /* Medium teal */
+            display: block;
+            margin-top: 8px;
+        }
+
+
+        .node {
+            margin-bottom: 8px;
+            border-left: 4px solid transparent;
+            padding-left: 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        .node-content {
+            background-color: #e8f5e9; /* Very light green */
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            border: 1px solid #c8e6c9; /* Light green border */
+        }
+
+        .node-content:hover {
+            background-color: #d0e0d0; /* Slightly darker green on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .node-text {
+            font-weight: 600;
+            color: #1b5e20; /* Dark green for text */
+            flex-grow: 1;
+        }
+
+        .toggle-icon {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #00796b; /* Dark teal */
+            transition: transform 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .legend {
+            background-color: #fafafa; /* Off-white for legend background */
+            padding: 18px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0; /* Light gray border */
+            display: none; /* Initially hidden */
+            color: #424242; /* Dark gray for legend text */
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.04);
+        }
+
+        .legend p, .legend ul {
+            margin: 0 0 12px 0;
+        }
+        .legend p:last-child, .legend ul:last-child {
+            margin-bottom: 0;
+        }
+        .legend ul {
+            padding-left: 20px;
+        }
+        .legend li {
+            margin-bottom: 8px;
+        }
+
+        /* Hierarchy Styling */
+        .node[data-level="0"] { border-left-color: #004d40; padding-left: 0; margin-left:0;}
+        .node[data-level="0"] > .node-content { background-color: #00796b; color: white; border-color: #004d40;}
+        .node[data-level="0"] > .node-content .node-text { color: white; font-size: 1.6em; }
+        .node[data-level="0"] > .node-content .toggle-icon { color: white; }
+
+        .node[data-level="1"] { margin-left: 25px; border-left-color: #2e7d32; } /* Dark medium green */
+        .node[data-level="1"] > .node-content { background-color: #a5d6a7; border-color: #81c784; } /* Light green */
+        .node[data-level="1"] > .node-content .node-text { color: #1b5e20; font-size: 1.3em;} /* Dark green */
+        .node[data-level="1"] > .node-content .toggle-icon { color: #1b5e20; }
+
+        .node[data-level="2"] { margin-left: 50px; border-left-color: #66bb6a; } /* Medium green */
+        .node[data-level="2"] > .node-content { background-color: #c8e6c9; border-color: #a5d6a7; } /* Lighter green */
+        .node[data-level="2"] > .node-content .node-text { color: #2e7d32; font-size: 1.15em;} /* Dark medium green */
+        .node[data-level="2"] > .node-content .toggle-icon { color: #2e7d32; }
+
+        .node[data-level="3"] { margin-left: 75px; border-left-color: #a5d6a7; } /* Light green */
+        .node[data-level="3"] > .node-content { background-color: #e8f5e9; border-color: #c8e6c9; } /* Very light green */
+        .node[data-level="3"] > .node-content .node-text { color: #388e3c; } /* Green */
+        .node[data-level="3"] > .node-content .toggle-icon { color: #388e3c; }
+
+        .node[data-level="4"] { margin-left: 100px; border-left-color: #c8e6c9; } /* Lighter green */
+        .node[data-level="4"] > .node-content { background-color: #f1f8e9; border-color: #e8f5e9;} /* Almost white green */
+        .node[data-level="4"] > .node-content .node-text { color: #558b2f; } /* Olive green */
+        .node[data-level="4"] > .node-content .toggle-icon { color: #558b2f; }
+
+        .node.open > .node-content .toggle-icon {
+            transform: rotate(45deg);
+        }
+
+        .team-opinion {
+            margin-top: 50px;
+            padding: 25px;
+            background-color: #e3f2fd; /* Very light blue */
+            border: 1px solid #90caf9; /* Light blue border */
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .team-opinion h2 {
+            color: #0d47a1; /* Dark blue */
+            border-bottom: 2px solid #42a5f5; /* Medium blue border */
+            padding-bottom: 12px;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+         .team-opinion h3 {
+            color: #1565c0; /* Slightly darker blue */
+            margin-top: 20px;
+            font-size: 1.3em;
+        }
+        .team-opinion .filled-opinion {
+            color: #424242; /* Dark gray */
+            padding: 15px;
+            background-color: #bbdefb; /* Lighter blue */
+            border-radius: 6px;
+            min-height: 60px;
+            border: 1px dashed #90caf9;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body { padding: 15px; }
+            .mindmap-container { padding: 20px; }
+            .mindmap-header h1 { font-size: 2.2em; }
+            .mindmap-header p.subtitle { font-size: 1em; }
+            .mindmap-header .student-info { font-size: 1em; padding: 12px; }
+            .node[data-level="1"] { margin-left: 10px; padding-left: 10px; }
+            .node[data-level="2"] { margin-left: 20px; padding-left: 10px; }
+            .node[data-level="3"] { margin-left: 30px; padding-left: 10px; }
+            .node[data-level="4"] { margin-left: 40px; padding-left: 10px; }
+            .node-content { padding: 12px 15px; }
+            .node-text { font-size: 1em !important; /* Override for smaller screens */ }
+            .toggle-icon { font-size: 1.2em; }
+        }
+         @media (max-width: 480px) {
+            .mindmap-header h1 { font-size: 1.8em; }
+            .team-opinion h2 { font-size: 1.5em; }
+            .team-opinion h3 { font-size: 1.1em; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mindmap-container">
+        <div class="mindmap-header">
+            <h1>Medicina, Saúde e Sociedade I</h1>
+            <p class="subtitle">Este mapa mental interativo organiza os principais temas da disciplina. Clique em cada tópico para expandir e ver a legenda explicativa.</p>
+            <div class="student-info">
+                <p><strong>Trabalho em Grupo - Alunos:</strong><br>
+                    <strong>Ana Beatriz Barbosa Lima Sousa</strong><br>
+                    <strong>Anna Hilda Alverga Ramalho Barbosa</strong><br>
+                    <strong>Clara Yasmin Cunha Fernandes dos Santos</strong><br>
+                    <strong>Débora Vitória da Silva Moreira</strong><br>
+                    <strong>Erivaldo Herculano da Silva Filho</strong><br>
+                    <strong>Gabriel Wanderley Lucio</strong><br>
+                    <strong>Ícaro Richélli Dias</strong><br>
+                    <strong>Manuel Félix de Oliveira Júnior</strong><br>
+                    <strong>Matheus Philipe Ribeiro Barboza</strong>
+                </p>
+                <p class="class-details">Turma B - Medicina UNIPÊ (Terceiro Período)</p>
+            </div>
+        </div>
+
+        <div class="node" data-level="0">
+            <div class="node-content">
+                <span class="node-text">NÓ CENTRAL: MEDICINA, SAÚDE E SOCIEDADE I</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Visão geral da disciplina Medicina, Saúde e Sociedade I, oferecida pelo UNIPÊ, abrangendo a evolução da prática médica, ética, relação médico-paciente, e o papel da medicina na sociedade contemporânea.</p>
+            </div>
+        </div>
+
+        <div class="node" data-level="1">
+            <div class="node-content">
+                <span class="node-text">2. HISTÓRIA DA MEDICINA</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Panorama histórico da prática médica desde as civilizações antigas até os avanços modernos, e discussões sobre a evolução do papel do médico na sociedade. Esta seção explora as diversas fases da medicina, suas descobertas, figuras importantes e mudanças de paradigma ao longo do tempo.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">2.1. Medicina Primitiva</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>As crenças e práticas relacionadas à tentativa consciente do homem de combater as enfermidades desde o início da humanidade. A medicina estava ligada a práticas mágicas e sacerdotais, com o xamã como figura central. O tratamento envolvia rituais, cânticos, e empirismo no uso de plantas e imobilização de fraturas.</p>
+            </div>
+        </div>
+         <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">2.2. Medicina Egípcia</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Conhecimento derivado de papiros como o de Ebers e Smith, detalhando encantamentos e remédios práticos (óleo de castor, salgueiro). Avanços em reprodução, contracepção (acácia, mel) e testes de gravidez com urina. Prática de tomar o pulso. Cirurgias como remoção de cistos, circuncisão, e engessamento de fraturas. Anatomia aprendida com a mumificação. Uso de anestésicos (pó de mármore e vinagre, opiáceos). Médicos especialistas (swnu) e figuras como Imhotep.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">2.3. Medicina Chinesa</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Desenvolvida ao longo de dinastias como Xia, Shang e Zhou. Baseada em conceitos filosóficos como o Tao, a energia vital (Qi) e o equilíbrio Yin/Yang. Métodos diagnósticos: observar (língua, face), ouvir/cheirar, perguntar histórico e palpar (pulso, abdômen). Terapias: acupuntura, moxabustão, fitoterapia (Shennong Bencaojing), dietoterapia, massagens (Tui Na) e exercícios (Tai Chi Chuan). Figuras importantes como Bian Que e Sun Simiao (foco na ética e prevenção). Evolução com a teoria das três causas (Chen Yan) e avanços em anatomia com autópsias e estátuas de bronze para acupuntura. Impacto da integração com a medicina ocidental e da Revolução Cultural.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">2.4. Medicina Greco-Romana</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Transição para uma medicina racional, separada da magia e religião. Dividida em período pré-hipocrático, clássico e greco-romano.</p>
+                <p><strong>Grega:</strong> Alcmeon (anatomia, saúde como equilíbrio), Empédocles (teoria dos quatro humores). Hipócrates, "pai da medicina", focou na observação clínica, humoralismo e ética. Escola de Alexandria com Herófilo (anatomia) e Erasístrato (patologia). Dioscórides ("De Materia Medica"). Cláudio Galeno expandiu o modelo anatômico, teoria dos pneumas e farmácia.</p>
+                <p><strong>Romana:</strong> Forte influência grega. Inicialmente empírica, evoluiu com médicos gregos. Regularização da prática por Augusto, com médicos militares e públicos. Hospitais (valetudinária) e ênfase na saúde pública e saneamento.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">2.5. Medicina no Mundo Árabe</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Preservação e tradução de textos gregos em centros como Bagdá. Incorporação de conhecimentos do Talmud, Egito e Índia. Descrição de doenças como varíola e asma. Avanços em anatomia (incluindo feminina e fetal), farmacologia, fisiologia e técnicas cirúrgicas (antes feitas por barbeiros). Figuras notáveis: Al-Razi (Rhazes) distinguiu varíola do sarampo, introduziu suturas com entranhas animais. Ibn Sina (Avicena) com o "Cânone da Medicina", sobre a natureza contagiosa de doenças e quarentena. Al-Zahrawi (Albucasis) com tratado ilustrado de cirurgia. Ibn Al Nafis descreveu a circulação pulmonar. Desenvolvimento de hospitais e grandes farmacopeias.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">2.6. Medicina Medieval</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Período entre a queda do Império Romano (476 d.C.) e a queda de Constantinopla (1453). Alta Idade Média (sécs. V-XI): ruralização, reinos bárbaros, supremacia da Igreja Católica. Baixa Idade Média (sécs. XII-XV): renascimento comercial e urbano, surgimento de universidades. Peste Negra (1348) dizimou um terço da população europeia. Prática médica retrocedeu, com dogmatismo, superstição, astrologia, diagnóstico limitado à uroscopia. Anatomia e fisiologia rudimentares devido à proibição da dissecação. Terapêutica baseada em magia, orações, ervas, purgantes e sangrias. Péssimas condições de higiene e saneamento. Teoria demoníaca da doença e epidemias como castigo divino. Ensino médico escolástico, reproduzindo Galeno e Avicena. Destaque para a Escola de Salerno (Constantino Africanus) e Montpellier. Teoria dos quatro humores ainda vigente, justificando sangrias.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">2.7. Medicina no Renascimento (Sécs. XIV-XVI)</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Renovado interesse pelo passado greco-romano e desenvolvimento do método científico (experimentos, observação, coleta de dados). Invenção da imprensa revolucionou a difusão do conhecimento. Andreas Vesalius publicou "De Humani Corporis Fabrica" (1543), com descrições anatômicas precisas baseadas na dissecação de cadáveres humanos. Seus sucessores em Pádua, Gabriele Falloppio (órgãos reprodutores femininos) e Girolamo Fabrizio (válvulas cardíacas), continuaram os estudos anatômicos. Cirurgia ainda primitiva, praticada por barbeiros; Ambroise Paré inovou com suturas em vez de cauterização e tratamentos mais humanos para ferimentos de guerra. Paracelso defendeu que doenças específicas exigiam remédios específicos, pioneiro no uso de químicos e minerais (mercúrio para sífilis) e escreveu sobre medicina ocupacional. Surgimento da sífilis na Europa, nomeada por Girolamo Fracastoro, que também propôs a teoria das "sementes de doença" para contágio.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">2.8. Medicina Pré-Colombiana</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Práticas médicas nas Américas antes da chegada dos europeus.</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">2.8.1. Astecas</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Ocuparam o México central (1300-1521). Politeístas, com sacrifícios humanos que aumentaram o conhecimento anatômico. Saúde como equilíbrio de três almas: tonalli, teyolia, ihiyotl. Causas de doenças: sobrenaturais, mágicas, naturais. Xamãs como curandeiros. Tratados Badianus (fitoterapia) e Sahagun (anatomia, doenças). Conhecimento de anestésicos (camotl) e tabaco medicinal. Dizimados por doenças europeias (tifoide).</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">2.8.2. Maias</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Civilização entre 900 d.C. e século XVI, no sul do México e Guatemala. Encaravam doenças pela ciência e espiritualidade; desequilíbrio da energia vital ch'ulel (quente/frio). Amplo conhecimento de plantas medicinais, sangrias, banhos de ervas, banho de suor (temezcal). Xamãs (Ahmen) como curandeiros. Obstetrícia praticada por mulheres com massagens abdominais pós-parto. Anatomia avançada devido a sacrifícios. Técnicas cirúrgicas desenvolvidas, incluindo suturas e próteses dentárias de jade e turquesa.</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">2.8.3. Incas</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Viveram nos Andes (3000 a.C. - 1500 d.C.). Visão holística da medicina, interligando aspectos biológicos e psicológicos. Médicos curandeiros (Xamã ou Herbanários) realizavam rituais de purificação. Grande diversidade de fármacos e plantas medicinais (quinino para malária, folhas de coca como analgésico). Realizavam trepanações cranianas, transfusões e amputações. Curandeiros comunitários (Kallawayas), Watuk (diagnóstico) e Hanpeq (rituais). Conhecimento médico transmitido oralmente e por quipus (cordas com nós).</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">2.9. Medicina nos Séculos XVII e XVIII (Iluminismo)</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Período de grandes transformações e avanços científicos. William Harvey descreveu a circulação sanguínea bombeada pelo coração. Richard Lower e Robert Hooke estudaram a oxigenação do sangue; Antoine Lavoisier descobriu o oxigênio. Lower realizou as primeiras transfusões. Hooke e Anton van Leeuwenhoek usaram o microscópio para descobrir glóbulos vermelhos, bactérias e protozoários. Marcello Malpighi estudou a estrutura microscópica de órgãos e a embriologia. Thomas Willis notou açúcar na urina de diabéticos e descreveu o polígono de Willis. Thomas Sydenham, fundador da medicina clínica moderna, diferenciou doenças como gota e reumatismo. Giovanni Morgagni fundou a anatomia patológica, localizando doenças em órgãos específicos. Marie-François Bichat percebeu que doenças atacavam tecidos. Hermann Boerhaave usou o termômetro e modernizou o ensino clínico. Leopold Auenbrugger introduziu a percussão torácica. René Laënnec inventou o estetoscópio. James Lind provou que frutas cítricas curam o escorbuto. William Withering observou a eficácia da Digitalis para distúrbios cardíacos. Edward Jenner desenvolveu a vacina contra a varíola. Apesar dos avanços, tratamentos como ventosas, sangria e purgação continuavam comuns.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">2.10. Medicina no Século XIX</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Período de Revolução Industrial, crescimento populacional e urbanização, com desafios de higiene e saúde pública. Reorganização do ensino médico com formação prática e dissecação.<br>
+                <strong>Teoria Celular:</strong> Robert Hooke (observou células vegetais mortas), Van Leeuwenhoek (primeiro a ver células vivas), e o desenvolvimento da teoria por Theodore Schwann, Matthias Schleiden e Rudolf Virchow (células como unidade básica da vida, originadas de outras células; alterações celulares causam doenças como câncer).<br>
+                <strong>Teoria Germinal:</strong> John Snow (cólera e água contaminada), Louis Pasteur (microrganismos causam doenças, pasteurização, vacinas para antraz e raiva), Robert Koch (identificou bactérias do antraz, tuberculose, cólera; postulados de Koch), Ignaz Semmelweis (higiene das mãos na prevenção de infecção puerperal), Joseph Lister (cirurgia antisséptica com ácido carbólico). Descoberta dos vírus como agentes etiológicos (Walter Reed - febre amarela).<br>
+                <strong>Anestesia:</strong> Horace Wells (óxido nitroso) e William Thomas Green Morton (éter) revolucionaram a cirurgia.<br>
+                <strong>Fisiologia Experimental:</strong> François Magendie (necessidade da experimentação) e Claude Bernard (conceito de "função", "meio interno", função glicogênica do fígado, nervos vasomotores).<br>
+                <strong>Radiologia:</strong> Wilhelm Roentgen descobre o Raio-X, marcando nova era no diagnóstico.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">2.11. História da Medicina de Urgência</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Origens militares, com Hipócrates afirmando que cirurgiões deveriam ir à guerra. Exércitos gregos e romanos (medicus, magister) desenvolveram cuidados a feridos. Procedimentos como retirada de projéteis e amputações (Celsus). Ambroise Paré, cirurgião-barbeiro, inovou no tratamento de feridas de guerra (suturas, unguentos em vez de óleo fervente), membros artificiais e implantes dentários. Dominique Jean Larrey, cirurgião militar francês, criou as "ambulâncias volantes" para transporte rápido de feridos e o sistema de triagem. Henry Dunant inspirou a criação da Cruz Vermelha e da Convenção de Genebra. Criação dos "Médicos Sem Fronteiras" (1972). Desenvolvimento moderno do Atendimento Médico de Emergência (EMS) a partir dos anos 1960-70, com a ressuscitação cardiopulmonar (RCP por Peter Safar). Relatório "Morte Acidental e Invalidez" (1966) impulsionou o desenvolvimento do EMS nos EUA. Primeira residência em medicina de emergência na Universidade de Cincinnati (1972).</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">2.12. Medicina no Século XX e Avanços para o Século XXI</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Explosão de conhecimentos científicos e inovações tecnológicas. Urbanização, aumento da expectativa de vida e foco em doenças crônicas (cardíacas, câncer).<br>
+                <strong>Farmacologia:</strong> Desenvolvimento da aspirina (Bayer), Salvarsan (Paul Ehrlich para sífilis - "quimioterapia"), sulfas (Gerhard Domagk). Penicilina (Alexander Fleming, Howard Florey) e estreptomicina (Selman Waksman - "antibiótico"). Vacinas antivirais (pólio por Salk e Sabin). Antivirais (aciclovir) e antirretrovirais (AIDS). Descoberta de histamina, insulina, estrógeno, testosterona. Cortisona e primeiros medicamentos para doenças mentais (clorpromazina, imipramina). Anticoncepcionais orais (noretisterona). Tragédia da talidomida mudou testes de medicamentos.<br>
+                <strong>Cirurgia:</strong> Cirurgia plástica reconstrutiva (Archibald McIndoe). Primeira cirurgia cardíaca a céu aberto (William Bigelow). Primeiro transplante renal (EUA, 1952). Cirurgia para Tetralogia de Fallot (Alfred Blalock). Reimplante de membro (1962). Primeiro transplante cardíaco (Christiaan Barnard, 1967). Fertilização in vitro (Patrick Steptoe - Louise Brown, primeiro bebê de proveta, 1978). Endoscopia.<br>
+                <strong>Diagnóstico por Imagem:</strong> Tomografia Computadorizada (Geoffrey Hounsfield, 1972) e Ressonância Magnética Nuclear.<br>
+                <strong>Genética:</strong> Projeto Genoma Humano (1990-2003) mapeou o genoma humano. Impacto na compreensão de doenças, diagnóstico, tratamento e prevenção. Testes genéticos, farmacogenômica (medicamentos personalizados) e terapia gênica.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">2.13. História da Medicina no Brasil e SUS</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Ensino médico em Portugal iniciou-se em Coimbra (Mosteiro de Santa Cruz, séc. XII). Universidade de Lisboa (1290) ensinava medicina. Poucos médicos formados em Coimbra vieram para a colônia, trazendo uma medicina limitada. Chegada da corte de D. João VI em 1808 impulsionou a criação da Escola de Cirurgia da Bahia e, em seguida, no Rio de Janeiro. Conhecimento médico indígena era significativo e utilizado. Expansão das escolas médicas: UFRGS (1898), Instituto Soroterápico/Fiocruz (1900 por Oswaldo Cruz), Paraná (1912), São Paulo (1913). Regulamentação da Residência Médica (1977). Grande aumento no número de escolas médicas nas últimas décadas, levando a uma moratória em 2018.<br>
+                <strong>SUS (Sistema Único de Saúde):</strong> Antes do SUS, o Ministério da Saúde focava em promoção e prevenção; assistência médica era fragmentada (INPS/INAMPS para trabalhadores formais, caridade para indigentes). Crise da Previdência nos anos 70/80 levou à compra de serviços do setor público e à criação do SUDS. Movimento da Reforma Sanitária impulsionou a mudança. Constituição de 1988 estabeleceu a saúde como direito de todos e dever do Estado. Lei 8.080/1990 instituiu o SUS, com princípios de universalidade, integralidade e descentralização. Transferência do INAMPS para o Ministério da Saúde.</p>
+            </div>
+        </div>
+
+        <div class="node" data-level="1">
+            <div class="node-content">
+                <span class="node-text">3. ÉTICA MÉDICA</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Estudo dos valores morais que orientam a conduta médica, incluindo o Código de Ética Médica, o processo ético-profissional, e a análise de dilemas práticos.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">3.1. Fundamentos</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p><strong>Ética:</strong> Conjunto de valores que orientam o comportamento humano na sociedade, visando o bem-estar social; é uma reflexão sobre a moral. <strong>Moral:</strong> Conjunto de regras aplicadas no cotidiano, orientando ações e julgamentos sobre certo/errado. <strong>Ética Profissional:</strong> Conjunto de normas que formam a consciência do profissional e imperativos de sua conduta. <strong>Princípios Bioéticos:</strong> Autonomia (respeito à decisão do paciente), Beneficência (fazer o bem), Não Maleficência (não causar dano), Justiça (equidade).</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">3.2. Código de Ética Médica (CEM) e Processo Ético-Profissional (PEP)</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>O CEM (Conselho Federal de Medicina) estabelece os princípios e regras para a prática médica. O PEP (Processo Ético-Profissional) é o conjunto de normas processuais que regulamentam sindicâncias e julgamentos nos Conselhos de Medicina. Sua análise é sempre feita sob a ótica do CEM.</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">3.2.1. Estrutura do PEP</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Inicia-se com uma denúncia (escrita ou ex-officio), que pode ser aceita ou não. Se aceita, um conselheiro sindicante é escolhido para apurar os fatos (prazo de 90 dias, prorrogável). O relatório final do conselheiro pode indicar arquivamento ou instauração de PEP. Se indicado PEP, a Câmara de Sindicância analisa o caso. A instauração formal do PEP notifica o médico, garantindo ampla defesa. Fases incluem instrução processual (coleta de provas, depoimentos, perícias) e audiência. O julgamento é feito por uma Câmara Ética do CRM.</p>
+            </div>
+        </div>
+         <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">3.2.2. Punições e Recursos</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>As punições podem variar desde advertência confidencial, censura confidencial, censura pública em publicação oficial, suspensão das atividades profissionais por até 30 dias, até a cassação do exercício profissional. O médico pode recorrer da decisão ao Conselho Federal de Medicina (CFM), que pode confirmar, modificar, anular o julgamento ou aplicar nova penalidade. Todo o processo corre em sigilo até que haja pena pública.</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">3.2.3. Análise de Casos Éticos (Exemplos)</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p><strong>Caso 1: Atestado para Adiar Audiência:</strong> Denúncia contra médico por supostamente emitir atestado gracioso para seu irmão adiar audiência criminal. Defesa alega gastroenterite viral aguda. CRM avalia veracidade e ética na emissão do documento.</p>
+                <p><strong>Caso 2: Cirurgia no Paciente Errado:</strong> Denúncia contra cirurgião pediátrico por realizar postectomia em adolescente agendado para colecistectomia, e em seguida, a cirurgia correta. CRM investiga erro de identificação e possível negligência, imprudência ou imperícia.</p>
+                <p><strong>Caso 3: Plantonista Ausente:</strong> Denúncia da direção de hospital contra médico plantonista único que se ausentou para almoço, resultando em óbito de paciente por dor precordial sem assistência médica direta. Médico alega direito a intervalo. CRM avalia infração quanto à continuidade da assistência.</p>
+                <p><strong>Caso 4: Divergência Obstetra x Anestesista:</strong> Obstetra denuncia anestesista por "interferência indevida" ao contraindicar cesariana por ingesta alimentar recente da gestante. Obstetra realizou o procedimento com outro anestesista. CRM avalia a conduta da anestesista frente à autonomia profissional e segurança do paciente.</p>
+            </div>
+        </div>
+         <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">3.3. Erro Médico</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>É vedado ao médico praticar atos profissionais danosos ao paciente, caracterizados como imperícia (fazer mal o que deveria ser bem feito), imprudência (fazer o que não deveria ser feito) ou negligência (não fazer o que deveria ser feito).</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">3.3.1. Estatísticas e Fatores Contribuintes</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>No Brasil, em 2022, foram cerca de 35 mil novos processos por erro médico. Principais causas de processos: negligência, imperícia ou imprudência (60,3%); problemas na relação médico-paciente (9,5%). Fatores que aumentam processos: despersonalização da relação médico-paciente, mercantilismo, maior consciência dos direitos dos pacientes, acesso facilitado à justiça e deterioração do ensino médico. A medicina é uma atividade de meio, não de resultado.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">3.4. Ética em Ações (Posturas Éticas do Médico)</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Desenvolvimento de posturas éticas essenciais na prática médica:</p>
+                <ul>
+                    <li><strong>Ser mais consciente de si:</strong> Conhecer potencialidades e limitações, reconhecer a falibilidade, buscar satisfação profissional e estar ciente do próprio estado emocional.</li>
+                    <li><strong>Estar mais concentrado na relação:</strong> Presença física e psicológica, importância de ouvir e considerar cada palavra, reconhecer o silêncio como cuidado.</li>
+                    <li><strong>Escolher entre envolver-se ou não:</strong> A competência para cuidar pressupõe saberes técnicos e relacionais; o envolvimento proporciona aprendizado.</li>
+                    <li><strong>Prestar atenção na comunicação não verbal:</strong> Grande parte da comunicação é não verbal (55% sinais do corpo); estar atento às próprias expressões e às do paciente.</li>
+                    <li><strong>Utilizar melhor o tempo disponível:</strong> Estar presente no momento com o paciente; pequenas ações afetuosas fazem a diferença.</li>
+                    <li><strong>Gostar do que faz:</strong> Sentir satisfação no trabalho e reconhecer seu valor; repensar a importância das ações para resgatar essa satisfação.</li>
+                    <li><strong>Estimular o paciente a participar das decisões:</strong> Respeitar a autonomia do paciente, fornecendo todas as informações relevantes para a tomada de decisão.</li>
+                    <li><strong>Buscar alívio quando a morte é inevitável:</strong> Aceitar e falar sobre a morte é importante para paciente e profissional.</li>
+                    <li><strong>Assistir à família:</strong> Reconhecer e acolher as necessidades e emoções dos familiares durante o processo de adoecimento.</li>
+                    <li><strong>Conviver harmonicamente com a equipe multiprofissional:</strong> As relações interpessoais influenciam o cuidado; pensar antes de falar e agir para favorecer a comunicação.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="node" data-level="1">
+            <div class="node-content">
+                <span class="node-text">4. RELAÇÃO MÉDICO-PACIENTE</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Exploração dos aspectos comunicacionais, psicológicos e éticos que permeiam a interação entre o médico e o paciente.</p>
+            </div>
+        </div>
+         <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">4.1. Comunicação Efetiva e Assertiva</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>A comunicação assertiva é uma competência essencial na prática médica, exigindo excelência na assistência e segurança do paciente. A qualidade da interação impacta diretamente a confiança, adesão ao tratamento e desfechos clínicos. A comunicação eficaz envolve a transmissão clara, completa e empática de informações entre membros da equipe de saúde, evitando ruídos ou interpretações incorretas.</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">4.1.1. Importância para Segurança do Paciente</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Redução de erros médicos (ex: erros de medicação). Melhora da qualidade do cuidado e da satisfação do paciente. Fortalecimento do trabalho em equipe e redução de conflitos internos.</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">4.1.2. Fundamentos da Comunicação</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p><strong>Clareza e Objetividade:</strong> Uso de linguagem clara, evitando jargões técnicos, especialmente com pacientes e familiares.</p>
+                <p><strong>Escuta Ativa:</strong> Demonstrar empatia e interesse genuíno pelo que o outro comunica, fundamental para identificar preocupações.</p>
+                <p><strong>Feedback e Confirmação de Entendimento:</strong> Uso de técnicas como o "teach-back" para garantir que a mensagem foi compreendida.</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">4.1.3. Comunicação de Notícias Difíceis (Protocolo SPIKES)</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>A assertividade na comunicação de notícias difíceis deve ser acompanhada de sensibilidade. É crucial equilibrar a entrega de informações objetivas com acolhimento emocional. O modelo SPIKES fornece um guia:</p>
+                <ul>
+                    <li><strong>S - Setting (Preparação do ambiente):</strong> Escolher ambiente privado e adequado, com tempo e espaço para o paciente.</li>
+                    <li><strong>P - Perception (Percepção do paciente):</strong> Avaliar o que o paciente já sabe sobre sua condição.</li>
+                    <li><strong>I - Invitation (Convite para informação):</strong> Perguntar o quanto o paciente deseja saber.</li>
+                    <li><strong>K - Knowledge (Compartilhar o conhecimento):</strong> Informar de forma clara, gradual e sem jargões.</li>
+                    <li><strong>E - Emotions (Empatia com as emoções):</strong> Identificar e validar as emoções do paciente, mostrando-se disponível.</li>
+                    <li><strong>S - Strategy and Summary (Estratégia e resumo):</strong> Discutir próximos passos, resumir o discutido e garantir entendimento.</li>
+                </ul>
+                <p><strong>Benefícios do SPIKES:</strong> Reduz impacto psicológico, promove confiança, facilita tomada de decisões conjuntas, evita conflitos.</p>
+                <p><strong>Desafios:</strong> Lidar com emoções intensas, falta de tempo, diversidade cultural.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">4.2. Paternalismo vs. Autonomia do Paciente</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Tradicionalmente, a medicina exerceu um modelo paternalista, onde o médico decidia pelo paciente, visto como incapaz. O princípio da beneficência foi muitas vezes entendido como justificativa para o paternalismo, violando a autonomia do paciente (direito de autogoverno e participação nas decisões). A ética moderna enfatiza a importância de respeitar a autonomia do paciente, fornecendo informações para que ele possa decidir livremente.</p>
+            </div>
+        </div>
+         <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">4.3. Aspectos Psicológicos e Empatia</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Entender os aspectos psicológicos da relação médico-paciente e aplicar estratégias de comunicação efetiva. Aprimorar a empatia e a sensibilidade na interação com pacientes e colegas. Validar as emoções do paciente (raiva, medo, tristeza) com comportamento compassivo, linguagem corporal aberta e contato visual.</p>
+            </div>
+        </div>
+
+        <div class="node" data-level="1">
+            <div class="node-content">
+                <span class="node-text">5. MEDICINA, SAÚDE E SOCIEDADE (Intersecções)</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Análise da intrínseca relação entre a prática médica, as condições de saúde da população e os contextos sociais, culturais e econômicos.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">5.1. Determinantes Sociais da Saúde</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Discussão sobre os fatores sociais, econômicos, culturais, étnico-raciais, psicológicos e comportamentais que influenciam a saúde e a doença nas populações. Estes determinantes são cruciais para entender as desigualdades em saúde e planejar intervenções eficazes.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">5.2. Medicalização da Sociedade</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Análise crítica do processo pelo qual aspectos da vida cotidiana e problemas sociais são progressivamente definidos e tratados como questões médicas, expandindo o domínio da medicina sobre a sociedade.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">5.3. Saúde Pública e Papel Social do Médico</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Compreensão do papel do médico na promoção da saúde pública, na prevenção de doenças em nível populacional e na defesa de políticas de saúde justas e equitativas.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">5.4. Trabalho em Equipe</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>A importância da colaboração entre diferentes profissionais de saúde para um cuidado integral e eficaz.</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">5.4.1. Multidisciplinaridade</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Uma equipe multidisciplinar em saúde é composta por vários profissionais de especialidades e conhecimentos diferentes, que atuam de forma separada e independente para o atendimento de um paciente. O foco é no trabalho cooperativo, pressupondo solidariedade e confiança. O objetivo é abordar as múltiplas dimensões das demandas de saúde.</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">5.4.2. Interdisciplinaridade</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Profissionais, muitas vezes da mesma área, reúnem-se para atender a um foco específico, integrando saberes de diversas profissões na assistência. Define-se pelo grau de integração entre as disciplinas e a intensidade de trocas entre especialistas, enriquecendo todas as disciplinas. Requer esforço para transformar práticas cotidianas na construção de novas formas de saber, com atuação dialogada e decisões conjuntas. Entraves incluem o foco biomédico, relações de poder verticais, falta de comunicação e dificuldade de colocar em prática os conceitos. O objetivo é superar o modelo centrado na doença para um centrado na saúde, com integração bio-psico-social.</p>
+                 <p><strong>Contribuições da Colaboração:</strong> Cuidado holístico, melhoria da qualidade e segurança, melhores resultados, eficiência no uso de recursos, inovação e aprendizado contínuo, resposta às complexidades da saúde.</p>
+            </div>
+        </div>
+
+        <div class="node" data-level="1">
+            <div class="node-content">
+                <span class="node-text">6. AVANÇOS E DESAFIOS CONTEMPORÂNEOS</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Análise das inovações tecnológicas e das novas diretrizes que moldam a prática médica atual, bem como os desafios éticos e sociais decorrentes.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">6.1. Telemedicina</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Uso de tecnologias de informação e comunicação para prestação de serviços médicos à distância. Visa levar assistência a áreas remotas e otimizar o atendimento em grandes centros, baseada em parâmetros éticos, técnicos e legais para segurança e privacidade dos dados dos pacientes.</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">6.1.1. História e Regulamentação no Brasil</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Evolução desde iniciativas pioneiras (década de 1960), passando pela criação da Rede Nacional de Ensino e Pesquisa (RNP) em 1989, a Política Nacional de Informação e Informática em Saúde (PNIIS) em 2003, e o projeto "Telessaúde" em 2007. A pandemia de COVID-19 impulsionou a regulamentação, com o CFM autorizando teleorientação, telemonitoramento e teleinterconsulta, e a Lei nº 13.989/2020 permitindo a telemedicina (incluindo teleconsulta) durante a crise.</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">6.1.2. Vantagens e Desafios</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p><strong>Vantagens:</strong> Democratiza o acesso à saúde, supre demanda por médicos fora de centros urbanos, dispensa deslocamentos, economiza tempo e dinheiro, qualifica socorro extra-hospitalar, agiliza entrega de laudos, preserva sigilo (nuvem), reúne histórico do paciente (PEP).</p>
+                <p><strong>Desafios:</strong> Obstáculos legislativos, resistência de profissionais, vulnerabilidade socioeconômica (abismo digital), barreiras culturais e institucionais, e necessidade de adequação do aparato ético-legal (privacidade, confidencialidade, responsabilidade).</p>
+            </div>
+        </div>
+         <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">6.1.3. Considerações Éticas e Práticas</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>A consulta presencial permanece como padrão-ouro. O médico deve avaliar a qualidade das informações e segurança digital. Dados e imagens devem ser preservados conforme normas legais e do CFM (guarda, manuseio, integridade, veracidade, confidencialidade, privacidade, sigilo). O atendimento deve ser registrado em prontuário (SRES). O paciente deve autorizar via consentimento livre e esclarecido. O médico tem autonomia para decidir sobre a necessidade de consulta presencial, especialmente a primeira. O telemonitoramento de crônicos pode complementar a assistência presencial.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">6.2. Inteligência Artificial (IA) na Medicina</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Uso de computadores e algoritmos que analisam grandes volumes de dados para propor soluções a problemas médicos. Algoritmos combinados ao Prontuário Eletrônico do Paciente (PEP) avaliam históricos, identificam riscos e auxiliam na formulação de terapias personalizadas. A IA também compara imagens para suporte diagnóstico.</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">6.2.1. Aplicações e Vantagens</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p><strong>Aplicações:</strong> Suporte ao diagnóstico (Big Data, reconhecimento de padrões em imagens), verificação de sinais precoces de doenças (medicina preventiva), monitoramento remoto de pacientes (dispositivos vestíveis), cirurgias robóticas assistidas por IA (maior precisão, menos invasivas), envio de alertas para eventos graves, pesquisa e recuperação ágil de dados na nuvem.</p>
+                <p><strong>Vantagens Adicionais:</strong> Organização de agendas/documentos, transformação digital, bibliotecas qualificadas, cálculo de dosagem de medicamentos, melhora da produtividade, otimização da triagem, identificação de tendências populacionais, previsões de risco de doenças, tratamentos personalizados, apoio à gestão.</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">6.2.2. Desvantagens e Implicações Éticas</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p><strong>Desvantagens:</strong> Fragilidade do sigilo médico e necessidade de ferramentas de segurança para proteger dados sensíveis. Descrença ou falta de familiaridade com a tecnologia por parte dos profissionais. Potencial para gerar informação errada se alimentada por fontes não confiáveis. Incorporação de vieses humanos (preconceito, sexismo) nos algoritmos. Vulnerabilidade de informações confidenciais e necessidade de regulação. Influência na tomada de decisão médica.</p>
+                <p><strong>Implicações:</strong> A IA fornece o "know-what", mas o médico discute o "know-why" com o paciente, exigindo formação médica de qualidade e habilidades de comunicação. O aumento da capacidade de armazenamento e processamento de dados (Big Data) permite análises populacionais e individuais, mas exige integração de sistemas e padronização.</p>
+            </div>
+        </div>
+         <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">6.3. Publicidade Médica (Resolução CFM 2.336/2023)</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Regulamenta a publicidade e propaganda médica, com observância obrigatória pelo médico e diretor técnico. Publicidade médica promove estruturas/serviços/qualificações; propaganda médica divulga assuntos/ações de interesse da medicina. Visa esclarecer e educar a sociedade, evitando sensacionalismo e autopromoção.</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">6.3.1. Permissões e Regras Essenciais</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p><strong>Identificação:</strong> Nome completo do médico, nº do CRM + estado, e RQE para especialistas em toda publicidade. Pós-graduado deve informar "NÃO ESPECIALISTA" em caixa alta se não tiver RQE.</p>
+                <p><strong>"Antes e Depois":</strong> Permitido se o material for da especialidade registrada, acompanhado de texto educativo (indicações, fatores de risco, possíveis complicações, perspectivas para diferentes biotipos/faixas etárias). Paciente não pode ser identificado; imagem não pode ser manipulada nem sugerir garantia de resultado. Proibido usar para autopromoção ou sensacionalismo.</p>
+                <p><strong>Selfies e Ambiente de Trabalho:</strong> Permitidas desde que sem sensacionalismo, autopromoção ou concorrência desleal. Pode mostrar ambiente de trabalho e equipamentos (registrados na ANVISA e autorizados pelo CFM), desde que com fins educativos e sem atribuir capacidade privilegiada.</p>
+                <p><strong>Depoimentos de Pacientes/Celebridades:</strong> Médico pode repostar elogios, desde que não contenham adjetivos de superioridade ou promessas de resultado. Cuidado com repetição excessiva ou comentários de pessoas contratadas.</p>
+                <p><strong>Valores e Promoções:</strong> Pode publicizar valores de consulta/procedimentos e formas de pagamento. Anúncio de descontos permitido, sem manipulação de preços ou venda casada/premiações.</p>
+                <p><strong>Cursos:</strong> Para médicos/estudantes, especificar público; não ensinar ato médico a não médicos. Para leigos, permitido se não diagnosticar/prescrever (fins educativos sobre QV, prevenção). Eventos médicos devem ter RT e informar CRM.</p>
+            </div>
+        </div>
+        <div class="node" data-level="3">
+            <div class="node-content">
+                <span class="node-text">6.3.2. Vedações e Pilares Antiéticos</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p><strong>Filmagem de Procedimentos:</strong> Equipe externa proibida (exceção: parto, se não atrapalhar ato médico e com autorização). Médico pode filmar para fins científicos/acadêmicos com autorização do paciente, mas não exibir em rede social.</p>
+                <p><strong>Promessa de Resultados:</strong> Permanece proibida; atividade médica é de meio, não de fim.</p>
+                <p><strong>Mercantilização:</strong> Vedada (Art. 58 CEM). Publicidade deve ter cunho educativo, clareza sobre riscos e procedimentos. Imagem deve focar nas estruturas transformadas sem identificar o paciente.</p>
+                <p><strong>Pilares da Publicidade Antiética (a evitar):</strong></p>
+                <ul>
+                    <li><strong>Sensacionalismo:</strong> Exaltar atuação/local; divulgar métodos não reconhecidos pelo CFM (ex: Ozonioterapia); manipular dados; apresentar técnicas de forma inadequada ao público; causar pânico; usar imagens de forma abusiva/enganosa induzindo garantia de resultado.</li>
+                    <li><strong>Concorrência Desleal:</strong> Insinuar descobertas milagrosas com acesso condicionado; dirigir-se a colegas/técnicas de forma desrespeitosa; anunciar serviços gratuitos em consultório particular; anunciar campanhas sem identificar o patrocinador.</li>
+                    <li><strong>Autopromoção e Conteúdo Inverídico:</strong> Atribuir a si/serviço/técnica qualidades privilegiadas; anunciar práticas revolucionárias/milagrosas não aprovadas pelo CFM.</li>
+                </ul>
+                <p><strong>Observações Importantes:</strong> Retificações de publicidade antiética atenuam, mas não absolvem punição. Boletins médicos devem ser sóbrios e preservar sigilo. Reposts de elogios permitidos com moderação (ex: 2x por semestre do mesmo paciente ou diferentes?). Denúncias sobre publicidade podem ser anônimas.</p>
+            </div>
+        </div>
+
+        <div class="node" data-level="1">
+            <div class="node-content">
+                <span class="node-text">7. COMPETÊNCIAS MÉDICAS ESSENCIAIS</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Conjunto de conhecimentos, habilidades e atitudes que os estudantes de medicina devem desenvolver ao longo da disciplina, conforme o plano de ensino.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">7.1. Cognitivas</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Compreender a evolução histórica da prática médica e o papel do médico. Conhecer os fundamentos éticos e analisar códigos de ética. Identificar e resolver dilemas éticos. Entender os aspectos psicológicos da relação médico-paciente e aplicar comunicação efetiva. Analisar criticamente questões éticas, sociais e históricas. Aplicar conhecimento em situações práticas.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">7.2. Habilidades</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Capacidade de reconhecer e analisar dilemas éticos. Desenvolvimento de habilidades de tomada de decisão ética. Aprimoramento da comunicação efetiva, especialmente na relação médico-paciente. Desenvolvimento da empatia e sensibilidade. Compreensão da evolução histórica da medicina e do papel do médico. Capacidade de contextualizar eventos históricos na prática contemporânea. Desenvolvimento do pensamento crítico.</p>
+            </div>
+        </div>
+        <div class="node" data-level="2">
+            <div class="node-content">
+                <span class="node-text">7.3. Atitudes</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="legend">
+                <p>Demonstrar compromisso sólido com princípios éticos. Buscar integridade e honestidade. Cultivar atitude empática com pacientes. Manifestar comprometimento com a responsabilidade social. Cultivar pensamento crítico. Valorizar a importância da comunicação.</p>
+            </div>
+        </div>
+
+        <div class="team-opinion">
+            <h2>TEMAS DE DESTAQUE (Avaliação do Grupo)</h2>
+            
+            <h3>Tema Mais Interessante</h3>
+            <div class="filled-opinion">
+                <p>Para o nosso grupo, os temas que mais chamaram a atenção positivamente foram <strong>"3. Ética Médica"</strong>, especialmente a análise de casos práticos e o estudo do Processo Ético-Profissional (PEP), e também a <strong>"2. História da Medicina"</strong>, por nos fornecer uma base sólida sobre a evolução do pensamento e da prática médica. Compreender as raízes da profissão e os dilemas éticos contemporâneos é fundamental para uma formação humanizada e responsável. A discussão sobre <strong>"4.1.3. Comunicação de Notícias Difíceis (Protocolo SPIKES)"</strong> também foi muito valorizada, pois é uma habilidade crucial para o dia a dia médico.</p>
+            </div>
+
+            <h3>Tema que Poderia Ser Descartado</h3>
+            <div class="filled-opinion">
+                <p>Consideramos que todos os temas são relevantes para a formação. No entanto, se fosse absolutamente necessário condensar o conteúdo, talvez alguns detalhes muito específicos dentro da <strong>"2.8. Medicina Pré-Colombiana"</strong> ou de certas fases mais remotas da <strong>"2. História da Medicina"</strong> poderiam ser apresentados de forma mais resumida, focando nos legados mais diretos para a prática atual. Contudo, reiteramos que a contextualização histórica completa é muito enriquecedora e, idealmente, nenhum tema deveria ser completamente descartado, pois cada um contribui para uma visão mais ampla da medicina e seu papel social.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const nodes = document.querySelectorAll('.node-content');
+            nodes.forEach(nodeContent => {
+                nodeContent.addEventListener('click', function () {
+                    const parentNode = this.parentNode;
+                    const legend = parentNode.querySelector('.legend');
+                    const icon = this.querySelector('.toggle-icon');
+                    if (legend) {
+                        if (legend.style.display === 'block') {
+                            legend.style.display = 'none';
+                            parentNode.classList.remove('open');
+                            icon.textContent = '+';
+                        } else {
+                            legend.style.display = 'block';
+                            parentNode.classList.add('open');
+                            icon.textContent = '−';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
